@@ -16,10 +16,9 @@
         document.getElementById('input-form').addEventListener('submit', function(e){
             e.preventDefault();
             const publicKey = document.getElementById('public-key').value;
-            // const supabaseUrl = "https://bbbccohwdaliqhzlirrk.supabase.co";
-            // const { createClient } = supabase
-            // const _supabase = createClient(supabaseUrl, publicKey)
-
+            const supabaseUrl = "https://bbbccohwdaliqhzlirrk.supabase.co";
+            const { createClient } = supabase
+            const _supabase = createClient(supabaseUrl, publicKey)
 
 
             navigator.geolocation.watchPosition(function(position) {
@@ -28,39 +27,23 @@
                     longitude: position.coords.longitude
                 };
                 console.log("Sending location...")
-                // _supabase
-                //     .from('location')
-                //     .insert(data)
-                //     .then(response => {
-                //         console.log(response);
-                //     })
-                //     .catch(error => {
-                //         console.error('Error:', error);
-                //     });
-
-                fetch('https://pkc-41wq6.eu-west-2.aws.confluent.cloud:443/kafka/v3/clusters/lkc-y9npgk/topics/new-topic/records', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': publicKey
-                },
-                body: JSON.stringify({"value":{"type":"JSON","data":"hello"}})
-                })
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch((error) => {
-                console.error('Error:', error);
-                });
+                _supabase
+                    .from('location')
+                    .insert(data)
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                 console.log("Location sent")
             }, function(error){
                 console.error('Error:', error);
             }, {
                 enableHighAccuracy: true,
-                maximumAge: 1000 // 1 second
+                maximumAge: 100 // 0.1 second
             });
         });
     </script>
 </body>
 </html>
-
-
