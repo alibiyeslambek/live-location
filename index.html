@@ -24,9 +24,9 @@
             navigator.geolocation.watchPosition(function(position) {
                 const data = {
                     latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    timestamp: position.timestamp
+                    longitude: position.coords.longitude
                 };
+                console.log("Sending location...")
                 _supabase
                     .from('location')
                     .insert(data)
@@ -36,11 +36,12 @@
                     .catch(error => {
                         console.error('Error:', error);
                     });
+                console.log("Location sent")
             }, function(error){
                 console.error('Error:', error);
             }, {
                 enableHighAccuracy: true,
-                maximumAge: 1000 // 1 second
+                maximumAge: 100 // 0.1 second
             });
         });
     </script>
