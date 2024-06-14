@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location</title>
+</head>
+<body>
+    <h1>Live Location</h1>
+    <p id="location">Location data will appear here...</p>
+    <script>
+        const locationElement = document.getElementById("location");
+
+        function updateLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    locationElement.innerHTML = `Latitude: ${lat.toFixed(5)}, Longitude: ${lon.toFixed(5)}`;
+                });
+            } else {
+                locationElement.innerHTML = "Geolocation is not supported by your browser.";
+            }
+        }
+
+        setInterval(updateLocation, 1000);
+    </script>
+</body>
+</html>
