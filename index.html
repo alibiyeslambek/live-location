@@ -1,29 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Location</title>
+    <title>Location Sender</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1/dist/umd/supabase.umd.min.js"></script>
 </head>
 <body>
-    <h1>Live Location</h1>
-    <p id="location">Location data will appear here...</p>
+    <h1>Location Sender</h1>
+    <form id="input-form">
+        <label for="public-key">Supabase Public Key:</label><br>
+        <input type="text" id="public-key" name="public-key"><br>
+        <input type="submit" value="Start Sending Location">
+    </form>
+
     <script>
-        const locationElement = document.getElementById("location");
+        document.getElementById('input-form').addEventListener('submit', function(e){
+            e.preventDefault();
+            const publicKey = document.getElementById('public-key').value;
+            const supabaseUrl = "https://bbbccohwdaliqhzlirrk.supabase.co";
+            const supabase = new Supabase.SupabaseClient(supabaseUrl, publicKey);
 
-        function updateLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition((position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    locationElement.innerHTML = `Latitude: ${lat.toFixed(5)}, Longitude: ${lon.toFixed(5)}`;
-                });
-            } else {
-                locationElement.innerHTML = "Geolocation is not supported by your browser.";
-            }
-        }
-
-        setInterval(updateLocation, 1000);
+            navigator.geolocation.watchPosition(function(position) {
+                const data = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    timestamp: position.timestamp
+                };
+                supabase
+                    .from('location')
+                    .insert(data)
+                    .then(response => {
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            }, function(error){
+                console.error('Error:', error);
+            }, {
+                enableHighAccuracy: true,
+                maximumAge: 1000 // 1 second
+            });
+        });
     </script>
 </body>
 </html>
