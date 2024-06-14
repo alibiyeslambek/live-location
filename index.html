@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Location Sender</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@1/dist/umd/supabase.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <h1>Location Sender</h1>
@@ -17,7 +17,9 @@
             e.preventDefault();
             const publicKey = document.getElementById('public-key').value;
             const supabaseUrl = "https://bbbccohwdaliqhzlirrk.supabase.co";
-            const supabase = new Supabase.SupabaseClient(supabaseUrl, publicKey);
+            const { createClient } = supabase
+            const _supabase = createClient(supabaseUrl, publicKey)
+
 
             navigator.geolocation.watchPosition(function(position) {
                 const data = {
@@ -25,7 +27,7 @@
                     longitude: position.coords.longitude,
                     timestamp: position.timestamp
                 };
-                supabase
+                _supabase
                     .from('location')
                     .insert(data)
                     .then(response => {
